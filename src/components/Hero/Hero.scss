@@ -1,0 +1,74 @@
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
+
+.hero {
+    min-height: 500px;
+    max-width: 1440px;
+    background-color: $violetColor;
+
+    &__container {
+        border-top: 1px solid $whiteColor;
+        margin: 0 130px;
+        position: relative;
+
+        @media (max-width: 768px) {
+            margin: 0 100px;
+        }
+
+        @media (max-width: 480px) and (min-width: 320px) {
+            margin: 0 50px;
+        }
+    }
+
+    &__title {
+        margin-top: 115px;
+        @include font-style(36px, 400, 50px, $whiteColor);
+
+        @media (max-width: 768px) {
+            margin-top: 50px;
+        }
+
+        @media (max-width: 480px) and (min-width: 320px) {
+            font-size: 28px;
+        }
+    }
+
+    &__text {
+        margin-top: 30px;
+        @include font-style(16px, 600, 24px, $whiteColor);
+    }
+
+    &__button {
+        position: relative;
+        z-index: 2;
+        margin-top: 30px;
+        @include button(207px);
+    }
+
+    &__background {
+        position: absolute;
+        top: 122px;
+        width: 1180px;
+        @include font-style(200px, 700, 300px, $whiteColor);
+        text-align: center;
+        opacity: 12%;
+
+        @media (max-width: 1280px)  {
+            width: 100px;
+            font-size: 130px;
+            text-align: left;
+        }
+
+        @media (max-width: 1024px)  {
+            font-size: 100px;
+        }
+
+        @media (max-width: 768px) {
+            font-size: 70px;
+        }
+
+        @media (max-width: 480px) and (min-width: 320px) {
+            font-size: 45px;
+        }
+    }
+}
