@@ -2,11 +2,11 @@
 @import '../../styles/mixins.scss';
 
 .footer {
-    background-color: $darkGreyColor;
     min-height: 90px;
     max-width: 1440px;
 
     &__container {
+        background-color: $darkGreyColor;
         display: flex;
         justify-content: space-between;
         padding: 23px 130px;

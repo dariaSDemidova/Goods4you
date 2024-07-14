@@ -1,15 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCartItems } from '../../cartSlice';
+import { AppDispatch, RootState } from '../../store';
 import './Header.scss';
 import cartIcon from '../../assets/icons/cart.svg';
 
 const Header: React.FC = () => {
     const [menuOpen, setMenuOpen] = useState(false);
+    const dispatch = useDispatch<AppDispatch>();
+    const { totalQuantity, status: cartStatus } = useSelector((state: RootState) => state.cart);
+
+    const userName = "Johnson Smith";
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     };
+
+    useEffect(() => {
+        if (cartStatus === 'idle') {
+            dispatch(fetchCartItems());
+        }
+    }, [cartStatus, dispatch]);
 
     return (
         <header className="header">
@@ -32,11 +45,13 @@ const Header: React.FC = () => {
                             <Link to="/cart" className="header__menu-link" onClick={toggleMenu}>Cart</Link>
                             <div className="header__cart-icon">
                                 <img src={cartIcon} alt="cart" />
-                                <div className="header__cart-count">1</div>
+                                {totalQuantity > 0 && (
+                                    <div className="header__cart-count">{totalQuantity}</div>
+                                )}
                             </div>
                         </li>
                         <li className="header__menu-item">
-                            <a href="#" className="header__menu-link" onClick={toggleMenu}>Johnson Smith</a>
+                            <a href="#" className="header__menu-link" onClick={toggleMenu}>{userName}</a>
                         </li>
                     </ul>
                 </nav>

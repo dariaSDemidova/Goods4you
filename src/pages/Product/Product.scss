@@ -72,15 +72,23 @@
                 object-fit: cover;
                 border-radius: 4px;
                 margin-right: 20px;
+                cursor: pointer;
+                opacity: 0.7;
+                transition: opacity 0.3s ease;
 
                 &:last-child {
                     margin-right: 0;
+                }
+
+                &:hover {
+                    opacity: 1;
                 }
             }
         }
     }
 
     &__active {
+        opacity: 1;
         border: 3px solid #C4C4C4;
     }
 
@@ -154,17 +162,17 @@
 
     &__buying {
         position: relative;
-        height: 86px;
+        min-height: 86px;
         padding: 12px;
         border-radius: 6px;
         display: flex;
         justify-content: space-between;
+        align-items: center;
         overflow: hidden;
         @media (max-width: 480px) and (min-width: 320px) {
             flex-direction: column;
             align-items: center;
             gap: 15px;
-            height: 180px;
         }
 
         &::before {
@@ -219,6 +227,8 @@
     &__discount {
         display: flex;
         align-items: center;
+        padding-left: 24px;
+
         &-title {
             padding-right: 8px;
             @include font-style(16px, 400, 24px, $darkGreyColor);
@@ -289,4 +299,21 @@
             width: 172px;
         }
     }
+}
+
+
+.star-rating {
+    font-size: 16px;
+    width: 116px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.star {
+    color:#D5D5D5;
+    cursor: pointer;
+}
+
+.star.filled {
+    color: $redColor;
 }
