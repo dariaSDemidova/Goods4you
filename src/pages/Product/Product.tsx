@@ -3,11 +3,18 @@ import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import './Product.scss';
 import { Product as ProductType } from '../../product';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../../store';
+import { addToCart, removeFromCart, updateCart } from '../../cartSlice';
 
 const Product: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<ProductType | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const dispatch: AppDispatch = useDispatch();
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const cartItem = cartItems.find(item => item.id === product?.id);
 
   useEffect(() => {
     fetch(`https://dummyjson.com/products/${id}`)
@@ -39,6 +46,22 @@ const Product: React.FC = () => {
 
   const discountedPrice = (product.price * (1 - product.discountPercentage / 100)).toFixed(2);
   const roundedRating = Math.round(product.rating);
+
+  const handleAddToCart = () => {
+    dispatch(addToCart({ ...product, quantity: 1 }));
+  };
+
+  const handleUpdateCart = (productId: number, quantity: number) => {
+    if (product) {
+      if (quantity > 0) {
+        dispatch(updateCart({ ...product, quantity }));
+      } else {
+        dispatch(removeFromCart(productId));
+      }
+    }
+  };
+
+  const quantity = cartItem ? cartItem.quantity : 0;
 
   return (
     <>
@@ -97,7 +120,37 @@ const Product: React.FC = () => {
                   <div className="product__discount-amount">{product.discountPercentage}%</div>
                 </div>
               </div>
-              <button className="product__add-button">Add to cart</button>
+
+              {quantity > 0 ? (
+                <div className="product__control">
+                  <button
+                    aria-label="decrease quantity"
+                    className="product__button"
+                    onClick={() => handleUpdateCart(product.id, quantity - 1)}
+                  >
+                    <div className="product__button-minus"></div>
+                  </button>
+                  <div className="product__amount">{quantity} items</div>
+                  <button
+                    aria-label="increase quantity"
+                    className="product__button"
+                    onClick={() => handleUpdateCart(product.id, quantity + 1)}
+                  >
+                    <div className="product__button-plus">
+                      <div className="product__button-plus-vertical"></div>
+                      <div className="product__button-plus-horizontal"></div>
+                    </div>
+                  </button>
+                </div>
+              ) : (
+                <button
+                  aria-label="add to cart"
+                  className="product__add-button"
+                  onClick={handleAddToCart}
+                >
+                  Add to Cart
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -107,4 +160,3 @@ const Product: React.FC = () => {
 };
 
 export default Product;
-

@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 interface Product {
   id: number;
@@ -41,7 +41,6 @@ export const fetchCartItems = createAsyncThunk<Product[], void, { rejectValue: s
     try {
       const response = await fetch('https://dummyjson.com/carts/user/5');
       const data = await response.json();
-      console.log(data); 
       const firstCart = data.carts[0];
       if (!firstCart || firstCart.products.length === 0) {
         return [];
@@ -56,7 +55,40 @@ export const fetchCartItems = createAsyncThunk<Product[], void, { rejectValue: s
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
-  reducers: {},
+  reducers: {
+    addToCart: (state, action: PayloadAction<Product>) => {
+      const existingItem = state.items.find(item => item.id === action.payload.id);
+      if (existingItem) {
+        existingItem.quantity += action.payload.quantity;
+      } else {
+        state.items.push(action.payload);
+      }
+      state.totalQuantity += action.payload.quantity;
+      state.total += action.payload.price * action.payload.quantity;
+      state.discountedTotal += (action.payload.price * action.payload.quantity * (100 - action.payload.discountPercentage)) / 100;
+    },
+    removeFromCart: (state, action: PayloadAction<number>) => {
+      const index = state.items.findIndex(item => item.id === action.payload);
+      if (index !== -1) {
+        const item = state.items[index];
+        state.totalQuantity -= item.quantity;
+        state.total -= item.price * item.quantity;
+        state.discountedTotal -= (item.price * item.quantity * (100 - item.discountPercentage)) / 100;
+        state.items.splice(index, 1);
+      }
+    },
+    updateCart: (state, action: PayloadAction<Product>) => {
+      const index = state.items.findIndex(item => item.id === action.payload.id);
+      if (index !== -1) {
+        const existingItem = state.items[index];
+        state.totalQuantity = state.totalQuantity - existingItem.quantity + action.payload.quantity;
+        state.total = state.total - (existingItem.price * existingItem.quantity) + (action.payload.price * action.payload.quantity);
+        state.discountedTotal = state.discountedTotal - (existingItem.price * existingItem.quantity * (100 - existingItem.discountPercentage) / 100)
+          + (action.payload.price * action.payload.quantity * (100 - action.payload.discountPercentage) / 100);
+        state.items[index] = action.payload;
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCartItems.pending, (state) => {
@@ -65,9 +97,9 @@ const cartSlice = createSlice({
       .addCase(fetchCartItems.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.items = action.payload;
-        state.totalQuantity = action.payload.reduce((total, item) => total + item.quantity, 0);
-        state.total = action.payload.reduce((total, item) => total + item.price * item.quantity, 0);
-        state.discountedTotal = action.payload.reduce((total, item) => total + (item.price * item.quantity * (100 - item.discountPercentage)) / 100, 0);
+        state.totalQuantity = action.payload.reduce((acc, item) => acc + item.quantity, 0);
+        state.total = action.payload.reduce((acc, item) => acc + item.price * item.quantity, 0);
+        state.discountedTotal = action.payload.reduce((acc, item) => acc + (item.price * item.quantity * (100 - item.discountPercentage)) / 100, 0);
       })
       .addCase(fetchCartItems.rejected, (state, action) => {
         state.status = 'failed';
@@ -75,5 +107,7 @@ const cartSlice = createSlice({
       });
   },
 });
+
+export const { addToCart, removeFromCart, updateCart } = cartSlice.actions;
 
 export default cartSlice.reducer;
