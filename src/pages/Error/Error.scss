@@ -1,0 +1,23 @@
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
+
+.error {
+    max-width: 1440px;
+    padding: 150px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+
+    &__title {
+        @include font-style(100px, 600, 50px, $violetColor);
+    }
+
+    &__subtitle {
+        @include font-style(36px, 400, 50px, $darkGreyColor);
+    }
+
+    &__button {
+        @include button(207px);
+    }
+}

@@ -1,0 +1,58 @@
+
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
+
+.faq {
+    max-width: 1440px;
+    background-color: $violetColor;
+
+    &__container {
+        padding: 60px 280px;
+
+        @media (max-width: 1024px)  {
+            padding: 60px 100px;
+        }
+
+        @media (max-width: 768px) {
+            padding: 60px 70px;
+        }
+
+        @media (max-width: 480px) and (min-width: 320px) {
+            padding: 50px 50px;
+        }
+    }
+
+    &__title {
+        padding-bottom: 20px;
+        @include font-style(36px, 700, 56px, $whiteColor);
+    }
+
+    &__item {
+        .faq__question {
+            min-height: 78px;
+            @include font-style(20px, 400, 30px, $whiteColor);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq__icon {
+            font-size: 25px;
+            @include font-style(54px, 200, 30px, $whiteColor);
+            display: inline-block;
+            transition: transform 0.3s;
+            padding-bottom: 10px;
+        }
+
+        .faq__icon.open {
+            transform: rotate(45deg);
+        }
+
+        .faq__answer {
+            padding-bottom: 20px;
+            @include font-style(16px, 600, 26px, $whiteColor);
+            transition: max-height 0.3s ease-in-out;
+        }
+    }
+}
