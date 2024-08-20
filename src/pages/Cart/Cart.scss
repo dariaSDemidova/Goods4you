@@ -22,6 +22,12 @@
         cursor: pointer;
     }
 
+    &__not-found {
+        @include font-style(24px, 600, 36px, $softGreyColor);
+        text-align: center;
+        margin-top: 48px;
+    }
+
     &__content {
         margin: 48px 0 44px 0;
         display: flex;
